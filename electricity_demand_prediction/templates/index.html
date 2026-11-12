@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GridWise | Electricity Demand Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">G</div><span>GridWise</span></div>
+    <div class="side-label">WORKSPACE</div>
+    <a class="nav active" href="#overview"><span>▦</span> Overview</a>
+    <a class="nav" href="#analytics"><span>⌁</span> Demand analytics</a>
+    <a class="nav" href="#predict"><span>✳</span> Predict demand</a>
+    <a class="nav" href="#dataset"><span>▤</span> Dataset</a>
+    <div class="side-bottom"><div class="live-dot"></div><div><b>Demo environment</b><small>Local model active</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">ENERGY MANAGEMENT / DASHBOARD</div><h1>Electricity demand <span>intelligence</span></h1><p>Understand consumption patterns and estimate future power demand.</p></div>
+      <div class="top-chip"><span class="live-dot"></span> SYSTEM ONLINE</div>
+    </header>
+
+    <section id="overview" class="stats-grid">
+      <article class="stat-card"><div class="stat-head">LATEST RECORDED DEMAND <span>↗</span></div><div class="stat-value">{{ latest_demand }} <small>MW</small></div><div class="stat-foot">As of {{ latest_date }}</div></article>
+      <article class="stat-card"><div class="stat-head">AVERAGE DEMAND <span>◷</span></div><div class="stat-value">{{ average }} <small>MW</small></div><div class="stat-foot">Across all dataset records</div></article>
+      <article class="stat-card"><div class="stat-head">PEAK DEMAND <span>⌁</span></div><div class="stat-value">{{ peak }} <small>MW</small></div><div class="stat-foot">Highest recorded value</div></article>
+      <article class="stat-card accent-card"><div class="stat-head">MODEL ACCURACY <span>✳</span></div><div class="stat-value">{{ (metrics.r2 * 100)|round(1) }}<small>%</small></div><div class="stat-foot">R² score on holdout data</div></article>
+    </section>
+
+    <section id="analytics" class="content-grid">
+      <article class="panel wide-panel"><div class="panel-heading"><div><div class="eyebrow">CONSUMPTION TREND</div><h2>Daily average demand</h2></div><span class="tag">LAST 30 DAYS</span></div><div class="chart-wrap"><canvas id="dailyChart"></canvas></div></article>
+      <article class="panel"><div class="panel-heading"><div><div class="eyebrow">DAILY PROFILE</div><h2>Demand by hour</h2></div></div><div class="chart-wrap short"><canvas id="hourChart"></canvas></div><p class="chart-note">Average demand grouped by hour of day.</p></article>
+    </section>
+
+    <section id="predict" class="predict-section">
+      <div class="section-intro"><div class="eyebrow">MACHINE LEARNING TOOL</div><h2>Forecast your demand</h2><p>Enter a future date and expected weather conditions to estimate electricity demand.</p></div>
+      <div class="predict-grid">
+        <form id="predictForm" class="panel prediction-form">
+          <label>Date and time<input id="datetime" type="datetime-local" required></label>
+          <div class="two-fields"><label>Temperature (°C)<input id="temperature" type="number" min="-10" max="55" step="0.1" value="28" required></label><label>Humidity (%)<input id="humidity" type="number" min="0" max="100" value="65" required></label></div>
+          <button type="submit" id="predictBtn">Generate prediction <span>→</span></button>
+          <p class="form-hint">The model uses time, temperature and humidity features.</p>
+        </form>
+        <div class="result-panel" id="resultPanel"><div class="result-icon">✳</div><div class="eyebrow">PREDICTION RESULT</div><h3 id="resultTitle">Your estimate will appear here</h3><div class="result-number" id="resultNumber">— <small>MW</small></div><p id="resultNote">Submit the form to calculate an estimated demand value.</p></div>
+      </div>
+    </section>
+
+    <section id="dataset" class="panel dataset-panel"><div class="panel-heading"><div><div class="eyebrow">DATA EXPLORER</div><h2>Recent observations</h2></div><span class="tag">{{ records }} RECORDS</span></div>
+      <div class="table-scroll"><table><thead><tr><th>DATE & TIME</th><th>DEMAND (MW)</th><th>TEMPERATURE</th><th>HUMIDITY</th></tr></thead><tbody id="dataRows"><tr><td colspan="4">Loading records…</td></tr></tbody></table></div>
+      <div class="data-foot">Showing the latest 100 observations from the included sample dataset.</div>
+    </section>
+    <footer>GRIDWISE · EVS MINI PROJECT <span>Electricity demand prediction using machine learning</span></footer>
+  </main>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
